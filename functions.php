@@ -87,3 +87,24 @@ function volta_coffee_schema_markup() {
     echo '<script type="application/ld+json">' . wp_json_encode( $schema ) . '</script>' . "\n";
 }
 add_action( 'wp_head', 'volta_coffee_schema_markup' );
+
+/**
+ * Custom Post Type: Coffee Origins
+ */
+function volta_register_coffee_origins() {
+    register_post_type( 'coffee_origin', array(
+        'labels' => array(
+            'name'          => __( 'Coffee Origins', 'volta-coffee' ),
+            'singular_name' => __( 'Coffee Origin', 'volta-coffee' ),
+            'add_new_item'  => __( 'Add New Origin', 'volta-coffee' ),
+            'edit_item'     => __( 'Edit Origin', 'volta-coffee' ),
+        ),
+        'public'       => true,
+        'has_archive'  => true,
+        'show_in_rest' => true,
+        'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
+        'menu_icon'    => 'dashicons-coffee',
+        'rewrite'      => array( 'slug' => 'coffee-origins' ),
+    ) );
+}
+add_action( 'init', 'volta_register_coffee_origins' );
