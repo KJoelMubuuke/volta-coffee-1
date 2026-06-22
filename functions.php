@@ -11,16 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Theme Setup
  */
 function volta_coffee_setup() {
-    // SEO: let WordPress manage <title> tags dynamically
     add_theme_support( 'title-tag' );
-
-    // Allow custom logo upload
     add_theme_support( 'custom-logo' );
-
-    // Featured images (important for SEO + social sharing previews)
     add_theme_support( 'post-thumbnails' );
-
-    // HTML5 semantic markup for search forms, comments, galleries
     add_theme_support( 'html5', array(
         'search-form',
         'comment-form',
@@ -28,11 +21,8 @@ function volta_coffee_setup() {
         'gallery',
         'caption',
     ) );
-
-    // Responsive embeds (YouTube, etc.)
     add_theme_support( 'responsive-embeds' );
 
-    // Register navigation menu
     register_nav_menus( array(
         'primary' => esc_html__( 'Primary Menu', 'volta-coffee' ),
         'footer'  => esc_html__( 'Footer Menu', 'volta-coffee' ),
@@ -42,12 +32,21 @@ add_action( 'after_setup_theme', 'volta_coffee_setup' );
 
 /**
  * Enqueue Styles & Scripts
+ * Depend on WooCommerce's stylesheet so ours loads AFTER and overrides it.
  */
 function volta_coffee_scripts() {
+    $deps = array();
+
+    if ( class_exists( 'WooCommerce' ) ) {
+        $deps[] = 'woocommerce-general';
+        $deps[] = 'woocommerce-layout';
+        $deps[] = 'woocommerce-smallscreen';
+    }
+
     wp_enqueue_style(
         'volta-coffee-style',
         get_stylesheet_uri(),
-        array(),
+        $deps,
         wp_get_theme()->get( 'Version' )
     );
 }
@@ -70,7 +69,6 @@ add_action( 'wp_head', 'volta_coffee_meta_description', 1 );
 
 /**
  * SEO: Local Business Structured Data (Schema.org JSON-LD)
- * Helps Google show Volta Coffee in local search & maps results
  */
 function volta_coffee_schema_markup() {
     if ( ! is_front_page() ) {
@@ -108,3 +106,19 @@ function volta_register_coffee_origins() {
     ) );
 }
 add_action( 'init', 'volta_register_coffee_origins' );
+
+/**
+ * WooCommerce Theme Support
+ */
+function volta_coffee_woocommerce_support() {
+    add_theme_support( 'woocommerce' );
+    add_theme_support( 'wc-product-gallery-zoom' );
+    add_theme_support( 'wc-product-gallery-lightbox' );
+    add_theme_support( 'wc-product-gallery-slider' );
+}
+add_action( 'after_setup_theme', 'volta_coffee_woocommerce_support' );
+
+/**
+ * Remove WooCommerce default sidebar entirely (cleaner than CSS hiding)
+ */
+remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar' );

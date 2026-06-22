@@ -365,3 +365,131 @@ img {
     color: #6f4e37;
     font-weight: 600;
 }
+
+/* ==========================================================================
+   WooCommerce Shop & Product Pages
+   ========================================================================== */
+.woocommerce {
+    padding: 3rem 0;
+}
+
+.woocommerce-products-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.woocommerce-products-header h1 {
+    font-size: 2.2rem;
+    color: #2b2118;
+}
+
+ul.products {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.products li.product {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease;
+}
+
+ul.products li.product:hover {
+    transform: translateY(-4px);
+}
+
+ul.products li.product img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+ul.products li.product .woocommerce-loop-product__title {
+    font-size: 1.1rem;
+    color: #2b2118;
+    margin: 1rem 1rem 0.25rem;
+}
+
+ul.products li.product .price {
+    color: #c08a4e;
+    font-weight: 600;
+    margin: 0 1rem 1rem;
+    display: block;
+}
+
+ul.products li.product .button {
+    display: block;
+    margin: 0 1rem 1.25rem;
+    background: #2b2118;
+    color: #faf6f0;
+    text-align: center;
+    padding: 0.6rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+ul.products li.product .button:hover {
+    background: #c08a4e;
+    color: #2b2118;
+}
+
+/* Hide the default sidebar widgets (Pages/Archives list) on shop pages */
+.woocommerce-page aside,
+.woocommerce aside {
+    display: none;
+}
+
+/* Single product page */
+.single-product .product {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.single-product .woocommerce-product-gallery img {
+    border-radius: 8px;
+}
+
+.single-product .product_title {
+    color: #2b2118;
+}
+
+.single-product .price {
+    font-size: 1.5rem;
+    color: #c08a4e;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .single-product .product {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Override WooCommerce's default columns-N grid system directly */
+ul.products.columns-1,
+ul.products.columns-2,
+ul.products.columns-3,
+ul.products.columns-4,
+ul.products.columns-5,
+ul.products.columns-6 {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 2rem !important;
+}
+
+ul.products.columns-4 li.product,
+ul.products.columns-3 li.product,
+ul.products li.product {
+    width: 100% !important;
+    float: none !important;
+    margin: 0 !important;
+}
