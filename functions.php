@@ -122,3 +122,12 @@ add_action( 'after_setup_theme', 'volta_coffee_woocommerce_support' );
  * Remove WooCommerce default sidebar entirely (cleaner than CSS hiding)
  */
 remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar' );
+
+/* ── Volta 2.0 additions ── */
+require_once get_template_directory() . '/inc/menu.php';
+
+function volta_coffee_v2_assets() {
+	wp_enqueue_style( 'volta-fonts', 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap', array(), null );
+	wp_enqueue_script( 'volta-app', get_template_directory_uri() . '/app.js', array(), '2.0.0', true );
+}
+add_action( 'wp_enqueue_scripts', 'volta_coffee_v2_assets' );
