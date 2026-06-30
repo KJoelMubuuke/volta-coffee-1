@@ -4,7 +4,10 @@
  *
  * @package Volta_Coffee
  */
-get_header(); ?>
+get_header();
+
+$menu_data = volta_get_menu_data();
+?>
 
 <main id="primary" class="site-main">
 	<section class="page-hero">
@@ -18,39 +21,28 @@ get_header(); ?>
 
 	<section class="menu-section">
 		<div class="container">
-		<?php
-		$categories = get_terms( array( 'taxonomy' => 'menu_category', 'hide_empty' => true ) );
-		if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) :
-		?>
+		<?php if ( ! empty( $menu_data ) ) : ?>
 			<div class="menu-filters" role="tablist" aria-label="<?php esc_attr_e( 'Filter menu by category', 'volta-coffee' ); ?>">
 				<button class="menu-filter is-active" data-filter="all" role="tab" aria-selected="true"><?php esc_html_e( 'All', 'volta-coffee' ); ?></button>
-				<?php foreach ( $categories as $cat ) : ?>
-					<button class="menu-filter" data-filter="<?php echo esc_attr( $cat->slug ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $cat->name ); ?></button>
+				<?php foreach ( $menu_data as $cat ) : ?>
+					<button class="menu-filter" data-filter="<?php echo esc_attr( $cat['slug'] ); ?>" role="tab" aria-selected="false"><?php echo esc_html( $cat['name'] ); ?></button>
 				<?php endforeach; ?>
 			</div>
 			<div class="menu-results" aria-live="polite">
-			<?php foreach ( $categories as $cat ) :
-				$items = new WP_Query( array(
-					'post_type'      => 'menu_item',
-					'posts_per_page' => -1,
-					'orderby'        => 'menu_order title',
-					'order'          => 'ASC',
-					'tax_query'      => array( array( 'taxonomy' => 'menu_category', 'field' => 'slug', 'terms' => $cat->slug ) ),
-				) );
-				if ( $items->have_posts() ) : ?>
-					<div class="menu-category" data-category="<?php echo esc_attr( $cat->slug ); ?>">
-						<h2><?php echo esc_html( $cat->name ); ?></h2>
-						<ul class="menu-list">
-						<?php while ( $items->have_posts() ) : $items->the_post(); ?>
-							<li class="menu-item">
-								<span class="menu-item-name"><?php the_title(); ?></span>
-								<?php if ( has_excerpt() ) : ?><span class="menu-item-desc"><?php echo esc_html( get_the_excerpt() ); ?></span><?php endif; ?>
-								<span class="menu-item-price"><?php echo esc_html( volta_get_price( get_the_ID() ) ); ?></span>
-							</li>
-						<?php endwhile; ?>
-						</ul>
-					</div>
-				<?php endif; wp_reset_postdata(); endforeach; ?>
+			<?php foreach ( $menu_data as $cat ) : ?>
+				<div class="menu-category" data-category="<?php echo esc_attr( $cat['slug'] ); ?>">
+					<h2><?php echo esc_html( $cat['name'] ); ?></h2>
+					<ul class="menu-list">
+					<?php foreach ( $cat['items'] as $item ) : ?>
+						<li class="menu-item">
+							<span class="menu-item-name"><?php echo esc_html( $item['title'] ); ?></span>
+							<?php if ( $item['excerpt'] ) : ?><span class="menu-item-desc"><?php echo esc_html( $item['excerpt'] ); ?></span><?php endif; ?>
+							<span class="menu-item-price"><?php echo esc_html( $item['price'] ); ?></span>
+						</li>
+					<?php endforeach; ?>
+					</ul>
+				</div>
+			<?php endforeach; ?>
 			</div>
 		<?php else : ?>
 			<div class="menu-empty">

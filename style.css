@@ -4,7 +4,7 @@ Theme URI: https://github.com/KJoelMubuuke/VOLTA-COFFEE
 Author: Joel Mubuuke
 Author URI: https://github.com/KJoelMubuuke
 Description: Custom WordPress theme for Volta Coffee, a single-location craft coffee shop offering online ordering, a curated menu, and loyalty rewards.
-Version: 2.0.0
+Version: 2.1.0
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 8.0
@@ -331,14 +331,63 @@ ul.products.columns-4 li.product, ul.products.columns-3 li.product, ul.products 
 }
 
 /* ==========================================================================
+   Fallback template (blog index, search, archives, 404)
+   ========================================================================== */
+.fallback-section { padding: var(--space-lg) 0; background-color: var(--crema); }
+.page-hero h1 span { color: var(--volt-bright); }
+
+.post-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md); }
+.post-card {
+    background: #fff; border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow-sm); display: flex; flex-direction: column;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.post-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.post-card-thumb img { width: 100%; height: 200px; object-fit: cover; }
+.post-card-body { padding: var(--space-sm) var(--space-md) var(--space-md); flex: 1; display: flex; flex-direction: column; }
+.post-card-title { font-size: var(--step-2); margin-bottom: 0.25rem; }
+.post-card-title a { color: var(--espresso); }
+.post-card-title a:hover { color: var(--bean); text-decoration: none; }
+.post-card-meta { font-size: var(--step--1); color: var(--ash); margin-bottom: var(--space-xs); }
+.post-card-excerpt { color: var(--bean); margin-bottom: var(--space-sm); flex: 1; }
+.post-card-link { font-weight: 600; color: var(--espresso); }
+.post-card-link:hover { color: var(--volt); }
+
+.pagination { display: flex; justify-content: center; gap: var(--space-xs); margin-top: var(--space-lg); flex-wrap: wrap; }
+.pagination .page-numbers {
+    display: inline-block; padding: 0.5rem 1rem; border-radius: var(--radius);
+    border: 1px solid var(--line); color: var(--bean); font-weight: 600;
+}
+.pagination .page-numbers:hover { border-color: var(--volt); color: var(--espresso); text-decoration: none; }
+.pagination .page-numbers.current { background: var(--espresso); color: var(--crema); border-color: var(--espresso); }
+.fallback-search { margin-top: var(--space-md); display: flex; justify-content: center; }
+.fallback-search .search-form { display: flex; gap: var(--space-xs); width: 100%; max-width: 420px; }
+.fallback-search input[type="search"] {
+    flex: 1; padding: 0.65rem 1rem; border: 1px solid var(--line); border-radius: var(--radius);
+    font-family: var(--font-body); font-size: var(--step-0);
+}
+.fallback-search input[type="submit"] {
+    padding: 0.65rem 1.25rem; border: none; border-radius: var(--radius);
+    background: var(--espresso); color: var(--crema); font-weight: 600; cursor: pointer;
+}
+.fallback-search input[type="submit"]:hover { background: var(--volt); color: var(--espresso); }
+
+/* ==========================================================================
    Responsive
    ========================================================================== */
+@media (max-width: 1024px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .single-product .product { grid-template-columns: 1fr; }
+    ul.products { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+}
+
 @media (max-width: 768px) {
     .header-inner { flex-direction: column; gap: var(--space-sm); }
     .about-grid { grid-template-columns: 1fr; }
     .single-product .product { grid-template-columns: 1fr; }
     .hero h1 { font-size: var(--step-4); }
     .hero { padding: var(--space-lg) 0; }
+    .post-list { grid-template-columns: 1fr; }
 }
 
 /* Menu Filters */

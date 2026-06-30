@@ -27,6 +27,9 @@ Custom WordPress theme for Volta Coffee — a single-location craft coffee shop.
 | Google Fonts loaded via `wp_enqueue_style` | WP asset management best practice |
 | `font-display: swap` + `preconnect` hints | Core Web Vitals / performance |
 | IntersectionObserver scroll animation | Progressive enhancement |
+| Single source of truth for prices (linked WooCommerce product, with manual fallback) | Data integrity across CPT + WooCommerce |
+| Menu data fetched in one query + cached via transient, invalidated on edit | Query optimization, caching strategy |
+| Real fallback template for blog/search/archive/404 (instead of a stub) | Template hierarchy completeness |
 
 ## Architecture
 
@@ -37,12 +40,12 @@ volta-coffee-theme/
 ├── header.php          # DOCTYPE, <head>, site header, skip link
 ├── footer.php          # Site footer, wp_footer()
 ├── front-page.php      # Homepage: hero, story, hours & location
-├── page-menu.php       # Template for the cafe menu page (CPT-driven)
+├── page-menu.php       # Template for the cafe menu page (CPT-driven, single cached query)
 ├── page.php            # Generic page template
-├── index.php           # Blog fallback (required by WP)
+├── index.php           # Fallback: blog index, search results, archives, 404s
 ├── app.js              # Menu filter tabs (ARIA-compliant) + scroll animations
 ├── inc/
-│   └── menu.php        # menu_item CPT, menu_category taxonomy, price meta box
+│   └── menu.php        # menu_item CPT, menu_category taxonomy, price meta box, volta_get_menu_data()
 └── images/             # Static theme images (hero, about, menu, footer)
 ```
 
@@ -50,12 +53,17 @@ volta-coffee-theme/
 
 **`menu_item`** — each entry is an admin-managed menu item.
 - Taxonomy: `menu_category` (hierarchical, shown in REST API)
-- Meta: `_volta_price` (integer, UGX; saved via nonce-verified meta box)
-- Rendered by `page-menu.php` with a client-side category filter
+- Meta: `_volta_price` (integer, UGX; saved via nonce-verified meta box) — used when no shop product is linked
+- Meta: `_volta_linked_product_id` — optional WooCommerce product ID; when set, its live price overrides `_volta_price` so the Menu page and Shop page can never disagree
+- Rendered by `page-menu.php` via `volta_get_menu_data()`, a single `WP_Query` across all menu items grouped by category and cached in a transient (`volta_menu_items_v1`, 1 hour), invalidated on menu item save/trash/delete, category edit, and linked-product save
 
 **`coffee_origin`** — editorial content about coffee sourcing regions.
 - Exposed via the WP REST API (`show_in_rest: true`)
 - Supports title, editor, thumbnail, excerpt
+
+### Fallback Template (`index.php`)
+
+WordPress falls back to `index.php` for anything without a dedicated template — the blog index, search results, the `coffee_origin` archive, and (in the absence of a `404.php`) not-found requests. It renders a real post grid with pagination, a search-aware/404-aware page-hero heading, and a search form on empty search results, instead of a placeholder message.
 
 ### Performance
 
@@ -63,6 +71,7 @@ volta-coffee-theme/
 - JS loaded in footer with `true` as the last `wp_enqueue_script` argument
 - Images include `loading="lazy"` where above-the-fold is not critical
 - Google Fonts uses `font-display=swap` and is preceded by `preconnect` hints
+- Menu page data is fetched once per cache window instead of once per category per request
 
 ### Accessibility
 
