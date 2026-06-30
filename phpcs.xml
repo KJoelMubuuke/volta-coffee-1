@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<ruleset name="Volta Coffee Theme">
+    <description>WordPress coding standards for the Volta Coffee theme.</description>
+
+    <file>.</file>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <rule ref="WordPress">
+        <!-- Inline HTML in templates is intentional; suppress this cosmetic rule. -->
+        <exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped"/>
+    </rule>
+
+    <config name="minimum_supported_wp_version" value="6.0"/>
+    <config name="text_domain" value="volta-coffee"/>
+</ruleset>
